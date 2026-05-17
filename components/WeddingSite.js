@@ -367,7 +367,7 @@ export default function WeddingSite() {
     });
 
     // Countdown
-    function tick() { const target = new Date('2026-06-20T17:30:00'); const now = new Date(); let diff = Math.max(0, target - now); const d = Math.floor(diff / 86400000); diff %= 86400000; const h = Math.floor(diff / 3600000); diff %= 3600000; const m = Math.floor(diff / 60000); diff %= 60000; const s = Math.floor(diff / 1000); document.getElementById('cd-d').textContent = String(d).padStart(2, '0'); document.getElementById('cd-h').textContent = String(h).padStart(2, '0'); document.getElementById('cd-m').textContent = String(m).padStart(2, '0'); document.getElementById('cd-s').textContent = String(s).padStart(2, '0'); }
+    function tick() { const target = new Date('2026-06-20T15:00:00Z'); const now = new Date(); let diff = Math.max(0, target - now); const d = Math.floor(diff / 86400000); diff %= 86400000; const h = Math.floor(diff / 3600000); diff %= 3600000; const m = Math.floor(diff / 60000); diff %= 60000; const s = Math.floor(diff / 1000); document.getElementById('cd-d').textContent = String(d).padStart(2, '0'); document.getElementById('cd-h').textContent = String(h).padStart(2, '0'); document.getElementById('cd-m').textContent = String(m).padStart(2, '0'); document.getElementById('cd-s').textContent = String(s).padStart(2, '0'); }
     tick(); setInterval(tick, 1000);
 
         // Generic reveals
@@ -693,7 +693,7 @@ export default function WeddingSite() {
               </div></div>
             <div className="travel-card" data-tc="3" data-from="right"><span className="tc-corner-tr"></span><span className="tc-corner-bl"></span>
               <div className="tc-icon"><svg viewBox="0 0 60 60" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="14" cy="20" r="3" /><circle cx="46" cy="44" r="3" /><path d="M14 23 Q14 38,30 38 Q46 38,46 41" strokeDasharray="2 3" /><path d="M40 14 L50 20 L40 26" /></svg></div>
-              <div className="tc-body"><h3 className="tc-title">On the wedding day</h3><p className="tc-sub">Beirut &harr; Skylodge</p>
+              <div className="tc-body"><h3 className="tc-title">On the wedding day</h3><p className="tc-sub">Beirut <span className="tc-arrow">&#x2194;&#xFE0E;</span> Skylodge</p>
                 <p className="tc-text">We&apos;re working on shuttle arrangements between Beirut and the venue (50 min). Let us know in your RSVP.</p>
                 <p className="tc-meta">RSVP to reserve your spot</p>
               </div></div>
@@ -719,7 +719,7 @@ export default function WeddingSite() {
             </div>
             <div className="rsvp-row-full"><input className="rsvp-input" type="text" placeholder="Message (Optional)" id="rsvpMsg" /></div>
             <div className="rsvp-row-full rsvp-guest-section">
-              <p className="rsvp-guest-divider">For families, couples, and guests, kindly add accompanying guests below</p>
+              <p className="rsvp-guest-divider">For families, couples, and companions, kindly add accompanying guests below</p>
               <div id="guestList"></div>
               <button className="rsvp-add-guest" id="addGuestBtn" type="button">+ Add Another Guest</button>
               <p className="rsvp-decline-note" id="declineNote" style={{ display: "none" }}>Additional guests cannot be added when declining.</p>
