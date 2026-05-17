@@ -183,22 +183,19 @@ export default function WeddingSite() {
         let progress = Math.max(0, Math.min(1, scrolled / maxScroll));
         const trackWidth = colonnade.scrollWidth;
         const travel = trackWidth - vw;
-        // PRESTOP: px of vertical scroll before horizontal lock kicks in.
-        // Pin has top:-120px so it sticks when ~half the SKYLODGE heading has scrolled past.
-        const PRESTOP = 120;
-        if (rect.top <= -PRESTOP && rect.bottom >= vh) {
-          // Locked — drive horizontal colonnade
-          const lockedScrolled = scrolled - PRESTOP;
-          const lockedMax = maxScroll - PRESTOP;
-          const lockedProgress = Math.max(0, Math.min(1, lockedScrolled / lockedMax));
+        // Progress anchored to countdown section — starts accumulating from "until we say I do"
+        const cdEl = document.getElementById('countdown');
+        const globalStart = cdEl ? cdEl.offsetTop : practicalSection.offsetTop;
+        const globalEnd = practicalSection.offsetTop + practicalSection.offsetHeight - vh;
+        const lockedProgress = Math.max(0, Math.min(1, (window.scrollY - globalStart) / (globalEnd - globalStart)));
+
+        if (rect.top <= 0 && rect.bottom >= vh) {
+          // Pinned — drive horizontal colonnade
           colonnade.style.transform = 'translateX(' + (-lockedProgress * travel) + 'px)';
           practicalProgress.style.width = (lockedProgress * 100) + '%';
         } else if (rect.top > 0) {
-          colonnade.style.transform = 'translateX(0px)';
-          practicalProgress.style.width = '0%';
-        } else if (rect.top > -PRESTOP) {
-          // Pre-scroll phase: heading is scrolling off, colonnade stays put
-          colonnade.style.transform = 'translateX(0px)';
+          // Not yet pinned — pre-position colonnade silently so there is no jump when it pins
+          colonnade.style.transform = 'translateX(' + (-lockedProgress * travel) + 'px)';
           practicalProgress.style.width = '0%';
         } else {
           colonnade.style.transform = 'translateX(' + (-travel) + 'px)';
@@ -245,10 +242,11 @@ export default function WeddingSite() {
 
       // ═══ SPLIT-LANE — Travel section ═══
       if (travelSection && vw > 900) {
-        const rect = travelSection.getBoundingClientRect();
-        const scrolled = -rect.top;
-        const maxScroll = travelSection.offsetHeight - vh;
-        _rawTP = Math.max(0, Math.min(1, scrolled / maxScroll));
+        // Progress anchored to dress code section top
+        const tlEl = document.getElementById('dresscode');
+        const earlyStart = tlEl ? tlEl.offsetTop : travelSection.offsetTop;
+        const travelEnd = travelSection.offsetTop + travelSection.offsetHeight - vh;
+        _rawTP = Math.max(0, Math.min(1, (window.scrollY - earlyStart) / (travelEnd - earlyStart)));
         travelProgress.style.width = (_rawTP * 100) + '%';
         if (!_travelLerping) { _travelLerping = true; _lerpTravel(); }
       }
@@ -271,8 +269,12 @@ export default function WeddingSite() {
 
         // ── before this card's turn ──────────────────────────────────────────────
         if (rawP <= 0) {
-          card.style.transform = 'translateY(-50%) translateX(' + offX + 'px) scale(0.45)';
-          card.style.opacity = '0';
+          // First card: already partially visible as the section enters view
+          const peekOpacity = (i === 0) ? 0.28 : 0;
+          const peekScale   = (i === 0) ? 0.65 : 0.45;
+          const peekTx      = (i === 0) ? offX * 0.5 : offX;
+          card.style.transform = 'translateY(-50%) translateX(' + peekTx + 'px) scale(' + peekScale + ')';
+          card.style.opacity = String(peekOpacity);
           card.style.zIndex = 10 + i;
           card.classList.remove('active');
           return;
@@ -387,8 +389,20 @@ export default function WeddingSite() {
       }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
       mobCards.forEach(el => mobObs.observe(el));
     }
-    const revealEls = document.querySelectorAll('.reveal,.reveal-left,.reveal-right');
-    const revealObs = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); revealObs.unobserve(e.target); } }); }, { threshold: .15, rootMargin: '0px 0px -80px 0px' });
+    // ─── Timeline bidirectional reveal (separate from general one-way reveals) ───
+    const tlRevealEls = document.querySelectorAll('#timeline .reveal,#timeline .reveal-left,#timeline .reveal-right');
+    const tlRevealSet = new Set(tlRevealEls);
+    const timelineObs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('in'); }
+        else { e.target.classList.remove('in'); }
+      });
+    }, { threshold: .2, rootMargin: '0px 0px -60px 0px' });
+    tlRevealEls.forEach(el => timelineObs.observe(el));
+
+    // ─── General one-way reveals (excluding timeline) ───
+    const revealEls = Array.from(document.querySelectorAll('.reveal,.reveal-left,.reveal-right')).filter(el => !tlRevealSet.has(el));
+    const revealObs = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); revealObs.unobserve(e.target); } }); }, { threshold: .05, rootMargin: '0px 0px -20px 0px' });
     revealEls.forEach(el => revealObs.observe(el));
 
     // Dress code swatches — staggered pop-in
@@ -429,14 +443,37 @@ export default function WeddingSite() {
     const guestList = document.getElementById('guestList');
     const declineNote = document.getElementById('declineNote');
     let guestCount = 0;
+    let hasSubmitted = false;
 
     function updateGuestBtn() {
       const accepting = rsvpAccept && rsvpAccept.checked;
+      const declining = rsvpDecline && rsvpDecline.checked;
+
+      // Toggle add-guest button
       if (addGuestBtn) {
         addGuestBtn.classList.toggle('disabled', !accepting);
         addGuestBtn.disabled = !accepting;
       }
-      if (declineNote) declineNote.style.display = (rsvpDecline && rsvpDecline.checked) ? 'block' : 'none';
+
+      // Show/hide decline note
+      if (declineNote) declineNote.style.display = declining ? 'block' : 'none';
+
+      // Clear all guest fields when switching to decline
+      if (declining && guestList) {
+        guestList.innerHTML = '';
+        guestCount = 0;
+      }
+
+      // If already submitted and user switches to decline, re-enable submit to allow update
+      if (hasSubmitted && rsvpSubmitBtn) {
+        if (declining) {
+          rsvpSubmitBtn.disabled = false;
+          rsvpSubmitBtn.textContent = 'Update RSVP';
+        } else {
+          rsvpSubmitBtn.disabled = true;
+          rsvpSubmitBtn.textContent = 'Sent ✓';
+        }
+      }
     }
 
     function addGuest() {
@@ -496,11 +533,15 @@ export default function WeddingSite() {
         try {
           const res = await fetch('/api/rsvp', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
           if (!res.ok) throw new Error('Server error');
-          showStatus('Thank you! Your RSVP has been received.', 'var(--gold)');
+          hasSubmitted = true;
+          const msg = attending === 'No' && hasSubmitted
+            ? 'Your response has been updated.'
+            : 'Thank you! Your RSVP has been received.';
+          showStatus(msg, 'var(--gold)');
           rsvpSubmitBtn.textContent = 'Sent ✓';
         } catch (err) {
           showStatus('Something went wrong. Please try again.', '#E8766A');
-          rsvpSubmitBtn.textContent = 'Send RSVP';
+          rsvpSubmitBtn.textContent = hasSubmitted ? 'Update RSVP' : 'Send RSVP';
           rsvpSubmitBtn.disabled = false;
         }
       });
@@ -523,7 +564,7 @@ export default function WeddingSite() {
       <div id="site-bg"></div><div id="venue-bg"></div><div id="site-overlay"></div><div id="progress"></div>
 
       <nav id="nav">
-        <div className="nav-logo">A &middot; L</div>
+        <a href="#hero" className="nav-logo">A &middot; L</a>
         <ul className="nav-links"><li><a href="#countdown">Countdown</a></li><li><a href="#practical">Venue</a></li><li><a href="#timeline">Event Details</a></li><li><a href="#travel">Getting Around</a></li><li><a href="#rsvp">R.S.V.P.</a></li>{showRegistry && <li><a href="#registry">Wishes</a></li>}</ul>
         <button className="nav-burger" id="navBurger" aria-label="Open menu">
           <span></span><span></span><span></span>
