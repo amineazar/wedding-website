@@ -246,7 +246,7 @@ export default function WeddingSite() {
         const tlEl = document.getElementById('dresscode');
         const earlyStart = tlEl ? tlEl.offsetTop : travelSection.offsetTop;
         const travelEnd = travelSection.offsetTop + travelSection.offsetHeight - vh;
-        _rawTP = Math.max(0, Math.min(1, (window.scrollY - earlyStart) / (travelEnd - earlyStart)));
+        _rawTP = Math.max(0, Math.min(1, (window.scrollY - earlyStart) / (travelEnd - earlyStart) * 1.8));
         travelProgress.style.width = (_rawTP * 100) + '%';
         if (!_travelLerping) { _travelLerping = true; _lerpTravel(); }
       }
@@ -587,7 +587,7 @@ export default function WeddingSite() {
           <img src="/hero-title.png" className="hero-names-img" alt="Amine &amp; Lamya" />
           <div className="hero-rule"></div>
           <p className="hero-date">20 &middot; 06 &middot; 2026</p>
-          <p className="hero-location">Skylodge, Feytroun &mdash; Lebanon</p>
+          <p className="hero-location">Skylodge, Feytroun, Lebanon</p>
         </div>
         <div className="hero-scroll"><span>Scroll</span><div className="scroll-needle"></div></div>
       </section>
