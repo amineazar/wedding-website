@@ -246,7 +246,7 @@ export default function WeddingSite() {
         const tlEl = document.getElementById('dresscode');
         const earlyStart = tlEl ? tlEl.offsetTop : travelSection.offsetTop;
         const travelEnd = travelSection.offsetTop + travelSection.offsetHeight - vh;
-        _rawTP = Math.max(0, Math.min(1, (window.scrollY - earlyStart) / (travelEnd - earlyStart) * 1.8));
+        _rawTP = Math.max(0, Math.min(1, (window.scrollY - earlyStart) / Math.max(1, travelEnd - earlyStart)));
         travelProgress.style.width = (_rawTP * 100) + '%';
         if (!_travelLerping) { _travelLerping = true; _lerpTravel(); }
       }
@@ -342,6 +342,19 @@ export default function WeddingSite() {
         _travelLerping = false;
       }
     }
+    // ── Dynamically size travel section so it ends just after last card lands ──
+    function recalcTravelHeight() {
+      if (!travelSection || window.innerWidth <= 900) return;
+      const vh = window.innerHeight;
+      const tlEl = document.getElementById('dresscode');
+      const earlyStart = tlEl ? tlEl.offsetTop : travelSection.offsetTop;
+      // Section ends 0.35 screens after animation completes — keep just enough height
+      const H = earlyStart - travelSection.offsetTop + vh * 4.0;
+      travelSection.style.height = Math.max(H, 2.5 * vh) + 'px';
+    }
+    recalcTravelHeight();
+    window.addEventListener('resize', recalcTravelHeight, { passive: true });
+
     let _ticking = false;
     function _scheduleScroll() { if (!_ticking) { _ticking = true; requestAnimationFrame(() => { onScroll(); _ticking = false; }); } }
     window.addEventListener('scroll', _scheduleScroll, { passive: true });
@@ -564,7 +577,7 @@ export default function WeddingSite() {
       <div id="site-bg"></div><div id="venue-bg"></div><div id="site-overlay"></div><div id="progress"></div>
 
       <nav id="nav">
-        <a href="#hero" className="nav-logo">A &middot; L</a>
+        <a href="#hero" className="nav-logo"><img src="/favicon.svg" alt="A · L" className="nav-logo-img" /></a>
         <ul className="nav-links"><li><a href="#countdown">Countdown</a></li><li><a href="#practical">Venue</a></li><li><a href="#timeline">Event Details</a></li><li><a href="#travel">Getting Around</a></li><li><a href="#rsvp">R.S.V.P.</a></li>{showRegistry && <li><a href="#registry">Wishes</a></li>}</ul>
         <button className="nav-burger" id="navBurger" aria-label="Open menu">
           <span></span><span></span><span></span>
@@ -587,7 +600,7 @@ export default function WeddingSite() {
           <img src="/hero-title.png" className="hero-names-img" alt="Amine &amp; Lamya" />
           <div className="hero-rule"></div>
           <p className="hero-date">20 &middot; 06 &middot; 2026</p>
-          <p className="hero-location">Skylodge, Feytroun, Lebanon</p>
+          <p className="hero-location">Skylodge<br />Feytroun, Lebanon</p>
         </div>
         <div className="hero-scroll"><span>Scroll</span><div className="scroll-needle"></div></div>
       </section>
@@ -614,7 +627,7 @@ export default function WeddingSite() {
           </div>
           <div className="colonnade-stage"><div className="colonnade" id="colonnade">
             <div className="arch" data-arch="0"><svg className="arch-frame" viewBox="0 0 230 410" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M 8 408 L 8 130 Q 8 8,115 4 Q 222 8,222 130 L 222 408 Z" fill="url(#archG1)" stroke="rgba(201,160,74,0.45)" strokeWidth="1" /><path d="M 14 410 L 14 132 Q 14 14,115 10 Q 216 14,216 132 L 216 410" fill="none" stroke="rgba(201,160,74,0.18)" strokeWidth="0.6" /></svg><div className="arch-medallion"><svg viewBox="0 0 60 60" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><path d="M30,7 A14,14 0 0,1 44,21 C44,32 30,50 30,50 C30,50 16,32 16,21 A14,14 0 0,1 30,7 Z" strokeWidth="1.3" /><circle cx="30" cy="21" r="5" strokeWidth="1.1" /></svg></div><div className="arch-inner"><h3 className="arch-title">Worth the drive</h3><p className="arch-text">We&#39;re about an hour from Beirut. And since we fully plan on cheering and drinking all night long, we highly recommend booking a nearby hotel or Airbnb so we can party properly. Please don&#39;t drink and drive.</p></div></div>
-            <div className="arch" data-arch="1"><svg className="arch-frame" viewBox="0 0 230 410" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="archG1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="rgba(201,160,74,0.08)" /><stop offset="100%" stopColor="rgba(18,10,3,0.4)" /></linearGradient></defs><path d="M 8 408 L 8 130 Q 8 8,115 4 Q 222 8,222 130 L 222 408 Z" fill="url(#archG1)" stroke="rgba(201,160,74,0.45)" strokeWidth="1" /><path d="M 14 410 L 14 132 Q 14 14,115 10 Q 216 14,216 132 L 216 410" fill="none" stroke="rgba(201,160,74,0.18)" strokeWidth="0.6" /></svg><div className="arch-medallion"><svg viewBox="0 0 60 60" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><polyline points="6,50 22,22 38,50" strokeWidth="1.4" /><polyline points="22,50 38,10 54,50" strokeWidth="1.4" /></svg></div><div className="arch-inner"><h3 className="arch-title">Up in the mountains</h3><p className="arch-text">Celebrating at 1,300 meters, tucked between the rocks. Golf carts will whisk you from your car straight into the magic.</p></div></div>
+            <div className="arch" data-arch="1"><svg className="arch-frame" viewBox="0 0 230 410" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="archG1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="rgba(201,160,74,0.08)" /><stop offset="100%" stopColor="rgba(18,10,3,0.4)" /></linearGradient></defs><path d="M 8 408 L 8 130 Q 8 8,115 4 Q 222 8,222 130 L 222 408 Z" fill="url(#archG1)" stroke="rgba(201,160,74,0.45)" strokeWidth="1" /><path d="M 14 410 L 14 132 Q 14 14,115 10 Q 216 14,216 132 L 216 410" fill="none" stroke="rgba(201,160,74,0.18)" strokeWidth="0.6" /></svg><div className="arch-medallion"><svg viewBox="0 0 60 60" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><polyline points="6,50 22,22 38,50" strokeWidth="1.4" /><polyline points="22,50 38,10 54,50" strokeWidth="1.4" /></svg></div><div className="arch-inner"><h3 className="arch-title">Up in the mountains</h3><p className="arch-text">Celebrating at 1,300 meters altitude, tucked between rock formations. Don&apos;t worry, complimentary valet service will be available, and Golf Carts will whisk you from your car straight into the magic.</p></div></div>
             <div className="arch" data-arch="2"><svg className="arch-frame" viewBox="0 0 230 410" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M 8 408 L 8 130 Q 8 8,115 4 Q 222 8,222 130 L 222 408 Z" fill="url(#archG1)" stroke="rgba(201,160,74,0.45)" strokeWidth="1" /><path d="M 14 410 L 14 132 Q 14 14,115 10 Q 216 14,216 132 L 216 410" fill="none" stroke="rgba(201,160,74,0.18)" strokeWidth="0.6" /></svg><div className="arch-medallion"><svg viewBox="0 0 60 60" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><circle cx="30" cy="30" r="9" strokeWidth="1.3" /><line x1="30" y1="16" x2="30" y2="8" strokeWidth="1.2" /><line x1="44" y1="30" x2="52" y2="30" strokeWidth="1.2" /><line x1="30" y1="44" x2="30" y2="52" strokeWidth="1.2" /><line x1="16" y1="30" x2="8" y2="30" strokeWidth="1.2" /><line x1="39" y1="21" x2="43" y2="17" strokeWidth=".9" /><line x1="39" y1="39" x2="43" y2="43" strokeWidth=".9" /><line x1="21" y1="39" x2="17" y2="43" strokeWidth=".9" /><line x1="21" y1="21" x2="17" y2="17" strokeWidth=".9" /></svg></div><div className="arch-inner"><h3 className="arch-title">Sun&apos;s out, vibes out</h3><p className="arch-text">The sun might be a little extra during the day &mdash; but we&apos;ve got you covered with mini umbrellas for the shade lovers.</p></div></div>
             <div className="arch" data-arch="3"><svg className="arch-frame" viewBox="0 0 230 410" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M 8 408 L 8 130 Q 8 8,115 4 Q 222 8,222 130 L 222 408 Z" fill="url(#archG1)" stroke="rgba(201,160,74,0.45)" strokeWidth="1" /><path d="M 14 410 L 14 132 Q 14 14,115 10 Q 216 14,216 132 L 216 410" fill="none" stroke="rgba(201,160,74,0.18)" strokeWidth="0.6" /></svg><div className="arch-medallion"><svg viewBox="0 0 60 60" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><path d="M30,8 L33,27 L52,30 L33,33 L30,52 L27,33 L8,30 L27,27 Z" strokeWidth="1.3" /><path d="M47,10 L48.2,14 L52,15 L48.2,16 L47,20 L45.8,16 L42,15 L45.8,14 Z" strokeWidth=".9" /><path d="M14,42 L14.8,45 L18,46 L14.8,47 L14,50 L13.2,47 L10,46 L13.2,45 Z" strokeWidth=".8" /></svg></div><div className="arch-inner"><h3 className="arch-title">Cooler nights ahead</h3><p className="arch-text">Once the sun dips, it gets a bit nippy. Bring a cute layer so you can stay cozy and keep dancing under the stars.</p></div></div>
             <div className="arch" data-arch="4"><svg className="arch-frame" viewBox="0 0 230 410" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M 8 408 L 8 130 Q 8 8,115 4 Q 222 8,222 130 L 222 408 Z" fill="url(#archG1)" stroke="rgba(201,160,74,0.45)" strokeWidth="1" /><path d="M 14 410 L 14 132 Q 14 14,115 10 Q 216 14,216 132 L 216 410" fill="none" stroke="rgba(201,160,74,0.18)" strokeWidth="0.6" /></svg><div className="arch-medallion"><svg viewBox="0 0 60 60" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><ellipse cx="19" cy="36" rx="9" ry="6" strokeWidth="1.2" transform="rotate(-20 19 36)" /><ellipse cx="38" cy="26" rx="8" ry="5.5" strokeWidth="1.2" transform="rotate(12 38 26)" /><ellipse cx="44" cy="42" rx="9" ry="5.5" strokeWidth="1.2" transform="rotate(-8 44 42)" /><ellipse cx="26" cy="20" rx="6" ry="4" strokeWidth="1" transform="rotate(25 26 20)" /><ellipse cx="15" cy="48" rx="5" ry="3.5" strokeWidth=".9" transform="rotate(-10 15 48)" /></svg></div><div className="arch-inner"><h3 className="arch-title">Ditch the stilettos</h3><p className="arch-text">Gravel and pebbles aren&apos;t heel-friendly territory. Think chic but comfy &mdash; you&apos;ll thank us at 1am.</p></div></div>
@@ -633,7 +646,7 @@ export default function WeddingSite() {
         <div className="tl-wrap"><div className="tl-spine"></div>
           <div className="tl-item tl-left">
             <p className="tl-time reveal-left">18:00</p><div className="tl-dot reveal"></div><div className="tl-empty"></div>
-            <div className="tl-body reveal-left"><p className="tl-event">Wedding Ceremony</p><p className="tl-desc">Together with you, we mark the beginning of a new chapter filled with love, gratitude, and shared happiness.</p></div><div className="tl-empty"></div><div className="tl-empty"></div>
+            <div className="tl-body reveal-left"><p className="tl-event">Wedding Ceremony</p><p className="tl-desc">Together with you, we mark the beginning of a new chapter filled with love, gratitude, and shared happiness. Plan to arrive 10 minutes early to allow time for golf carts to transport you.</p></div><div className="tl-empty"></div><div className="tl-empty"></div>
           </div>
           <div className="tl-item tl-right">
             <div className="tl-empty"></div><div className="tl-dot reveal"></div><p className="tl-time reveal-right">19:00</p>
@@ -688,7 +701,7 @@ export default function WeddingSite() {
             <div className="travel-card" data-tc="2" data-from="left"><span className="tc-corner-tr"></span><span className="tc-corner-bl"></span>
               <div className="tc-icon"><svg viewBox="0 0 60 60" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 50 L10 25 L30 12 L50 25 L50 50 Z" /><path d="M22 50 L22 36 L38 36 L38 50" /><line x1="30" y1="36" x2="30" y2="50" strokeWidth=".8" /><circle cx="30" cy="22" r="2" strokeWidth=".8" /></svg></div>
               <div className="tc-body"><h3 className="tc-title">Where to lay your head</h3><p className="tc-sub">Boutique &amp; local</p>
-                <p className="tc-text">We&apos;ve curated boutique hotels and traditional Lebanese Airbnbs. International chains also available in Beirut.</p>
+                <p className="tc-text">We&apos;ve carefully curated a selection of boutique hotels and charming traditional Lebanese Airbnbs for your stay. A downloadable list will be available soon.</p>
                 <p className="tc-meta">Our curated list arriving soon</p>
               </div></div>
             <div className="travel-card" data-tc="3" data-from="right"><span className="tc-corner-tr"></span><span className="tc-corner-bl"></span>

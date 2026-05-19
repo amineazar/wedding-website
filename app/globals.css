@@ -39,7 +39,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.8rem 4rem;display:
 .mobile-menu-links a{font-family:var(--sans);font-size:.85rem;letter-spacing:.32em;text-transform:uppercase;color:var(--cream);opacity:.75;text-decoration:none;transition:opacity .3s,color .3s}
 .mobile-menu-links a:hover{opacity:1;color:var(--gold-light)}
 nav.scrolled{background:rgba(18,10,3,.88);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);padding:1rem 4rem}
-.nav-logo{font-family:var(--script);font-size:1.55rem;letter-spacing:.02em;color:var(--gold-light);text-decoration:none;cursor:pointer}
+.nav-logo{text-decoration:none;cursor:pointer;display:flex;align-items:center}.nav-logo-img{height:38px;width:auto;display:block}
 .nav-links{list-style:none;display:flex;gap:0;align-items:center}
 .nav-links li{display:flex;align-items:center}
 .nav-links li+li::before{content:'|';color:var(--gold);opacity:.7;margin:0 1rem;font-size:.6rem;font-weight:400}
@@ -57,7 +57,7 @@ nav.scrolled{background:rgba(18,10,3,.88);-webkit-backdrop-filter:blur(14px);bac
 .hero-names-img{display:block;max-width:min(820px,92vw);width:100%;margin:0 auto 1.2rem;filter:invert(1) saturate(0) brightness(1.6);mix-blend-mode:screen;opacity:0;transform:translateY(30px);animation:heroFade 1.3s cubic-bezier(.16,1,.3,1) .65s forwards}
 .hero-rule{width:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:2rem auto;animation:ruleExpand 1.2s cubic-bezier(.16,1,.3,1) 1.1s forwards}
 .hero-date{font-family:var(--sans);font-size:clamp(1.35rem,2.8vw,2rem);letter-spacing:.4em;color:var(--gold-pale);text-transform:uppercase;font-weight:300;text-shadow:0 2px 20px rgba(18,10,3,.8);opacity:0;transform:translateY(20px);animation:heroFade 1s cubic-bezier(.16,1,.3,1) 1.3s forwards;margin-bottom:.8rem}
-.hero-location{font-family:var(--sans);font-size:clamp(1rem,2vw,1.4rem);font-style:normal;font-weight:300;letter-spacing:.25em;color:var(--gold);text-transform:uppercase;text-shadow:0 2px 8px rgba(18,10,3,.95),0 0 30px rgba(18,10,3,.85),0 0 60px rgba(18,10,3,.6);opacity:0;transform:translateY(20px);animation:heroFade 1s cubic-bezier(.16,1,.3,1) 1.5s forwards}
+.hero-location{font-family:var(--sans);font-size:clamp(1rem,2vw,1.4rem);font-style:normal;font-weight:300;letter-spacing:.25em;color:var(--gold);text-transform:uppercase;line-height:2;text-shadow:0 2px 8px rgba(18,10,3,.95),0 0 30px rgba(18,10,3,.85),0 0 60px rgba(18,10,3,.6);opacity:0;transform:translateY(20px);animation:heroFade 1s cubic-bezier(.16,1,.3,1) 1.5s forwards}
 .hero-scroll{position:absolute;bottom:2.5rem;left:0;right:0;margin:0 auto;display:flex;flex-direction:column;align-items:center;text-align:center;gap:.6rem;opacity:0;animation:heroFade 1s 2.2s forwards;z-index:3;width:fit-content}
 .hero-scroll span{font-family:var(--sans);font-size:.58rem;letter-spacing:.35em;color:var(--gold);text-transform:uppercase;font-weight:300}
 .scroll-needle{width:1px;height:55px;background:linear-gradient(to bottom,var(--gold),transparent);animation:needlePulse 2s ease-in-out infinite}
@@ -97,6 +97,7 @@ nav.scrolled{background:rgba(18,10,3,.88);-webkit-backdrop-filter:blur(14px);bac
 .arch-medallion svg{width:58%;height:58%}
 .arch::before{filter:sepia(.35) saturate(2.2) hue-rotate(335deg) contrast(1.35) brightness(.72)}
 #practical .section-eyebrow{font-size:.95rem;letter-spacing:.42em}
+#travel .section-eyebrow{font-size:.95rem;letter-spacing:.6em}
 .tl-schedule-label{font-family:var(--sans);font-size:.92rem;letter-spacing:.6em;color:var(--gold);text-transform:uppercase;font-weight:300;display:flex;align-items:center;justify-content:center;gap:1.4rem;margin:.8rem 0 .4rem}.tl-schedule-label::before,.tl-schedule-label::after{content:"";flex:0 0 60px;height:1px;opacity:.7;background:linear-gradient(to var(--d,right),transparent,var(--gold))}.tl-schedule-label::before{--d:right}.tl-schedule-label::after{--d:left}#timeline .section-eyebrow{font-size:1.45rem;letter-spacing:.42em}
 #timeline .section-title{font-size:clamp(2rem,3.8vw,3rem);font-family:'Quicksand',var(--sans);font-weight:300;letter-spacing:.32em;text-transform:uppercase}
 .venue-eyebrow{display:flex!important;align-items:center;justify-content:center;gap:1.4rem;letter-spacing:.42em!important}
@@ -144,7 +145,7 @@ nav.scrolled{background:rgba(18,10,3,.88);-webkit-backdrop-filter:blur(14px);bac
 .dresscode-tip.in{opacity:1;transform:translateY(0)}
 
 /* ═══ TRAVEL — Split-lane Approach ═══ */
-#travel{height:800vh;background:rgba(18,10,3,.65);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);border-top:1px solid rgba(201,168,76,.08);position:relative}
+#travel{height:300vh;background:rgba(18,10,3,.65);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);border-top:1px solid rgba(201,168,76,.08);position:relative}
 .travel-warm-texture{position:absolute;inset:0;pointer-events:none;z-index:2;opacity:.12;background:linear-gradient(135deg,rgba(139,96,64,.3),rgba(160,112,80,.2) 40%,rgba(122,80,48,.3) 80%,rgba(107,69,37,.2))}
 .travel-pin{position:sticky;top:0;height:100vh;width:100%;overflow:hidden;display:flex;flex-direction:column}.travel-parallax-bg{position:absolute;top:-25%;left:0;width:100%;height:150%;background-image:url('/travel_bg_image.png');background-size:contain;background-repeat:no-repeat;background-position:center center;z-index:0;will-change:transform;transform:translate3d(0,0,0)}.travel-parallax-overlay{position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(to bottom,rgba(12,6,2,0.55) 0%,rgba(12,6,2,0.42) 40%,rgba(12,6,2,0.50) 70%,rgba(12,6,2,0.65) 100%)}
 #travel .section-eyebrow{display:flex;align-items:center;justify-content:center;gap:1.4rem;margin-bottom:1.8rem;font-size:.72rem;letter-spacing:.55em}#travel .section-eyebrow::before,#travel .section-eyebrow::after{content:"";flex:0 0 70px;height:1px;opacity:.7;background:linear-gradient(to var(--d,right),transparent,var(--gold))}#travel .section-eyebrow::before{--d:right}#travel .section-eyebrow::after{--d:left}#travel .section-title{font-family:'Quicksand',var(--sans);font-size:clamp(1.2rem,2.8vw,2.1rem);font-weight:300;letter-spacing:.32em;text-transform:uppercase;color:var(--cream);margin-bottom:1.2rem;line-height:1.15}#travel .gold-rule{display:none}.travel-header-pin{text-align:center;padding:3.5rem 2rem 0;z-index:10;flex-shrink:0}
@@ -169,7 +170,7 @@ nav.scrolled{background:rgba(18,10,3,.88);-webkit-backdrop-filter:blur(14px);bac
 .tc-meta{font-family:var(--serif);font-style:italic;font-size:1.25rem;color:var(--gold);margin-top:1.4rem;padding-top:1rem;border-top:1px solid rgba(201,168,76,.18)}
 
 /* ═══ RSVP — Dark elegant ═══ */
-#rsvp{padding:10rem 2rem;background-color:var(--brown-deep);background-image:url('/rsvp_bg.jpeg');background-size:150%;background-position:center 40%;text-align:center;border-top:1px solid rgba(201,168,76,.12);position:relative;overflow:hidden}#rsvp::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(to bottom,rgba(10,5,2,0.78) 0%,rgba(14,7,3,0.62) 40%,rgba(14,7,3,0.65) 70%,rgba(10,5,2,0.80) 100%)}.rsvp-card{position:relative;z-index:2}
+#rsvp{padding:10rem 2rem;background-color:var(--brown-deep);background-image:url('/rsvp_bg.jpeg');background-size:150%;background-position:center 40%;text-align:center;position:relative;overflow:hidden}#rsvp::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(to bottom,rgba(10,5,2,0.82) 0%,rgba(14,7,3,0.62) 40%,rgba(14,7,3,0.65) 70%,rgba(10,5,2,0.80) 100%)}.rsvp-card{position:relative;z-index:2}
 .rsvp-card{max-width:780px;margin:0 auto;background:rgba(18,8,3,.88);border:1px solid rgba(201,168,76,.3);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);color:var(--cream);padding:4rem 3.5rem;box-shadow:0 12px 50px rgba(0,0,0,.4);position:relative}
 .rsvp-card-title{font-family:var(--display);font-size:clamp(3rem,7vw,5rem);color:var(--cream);letter-spacing:.1em;margin-bottom:.5rem;position:relative;z-index:1}
 .rsvp-card-sub{font-family:var(--sans);font-size:1.25rem;color:var(--cream-muted);margin-bottom:3rem;position:relative;z-index:1;font-weight:300}
@@ -250,7 +251,7 @@ footer{padding:3rem 1.5rem}.footer-names{font-size:2.6rem}
 .hero-names-img{max-width:min(500px,92vw)}
 #hero{padding:0 1rem}
 #countdown{padding:4rem 1rem}.cd-unit{padding:0 .5rem;width:auto;flex:1;flex-shrink:1}.cd-num{font-size:clamp(2.8rem,10vw,5rem)}.cd-sep{font-size:1.6rem;padding-bottom:.5rem}.cd-lbl{font-size:.52rem;letter-spacing:.25em}
-#dresscode{padding:5rem 1rem}.dresscode-parallax-bg{background-size:cover!important;background-position:center center!important;top:0!important;height:100%!important}#dresscode .dresscode-tip{font-size:1rem;line-height:1.9}
+#dresscode{padding:5rem 1rem}.dresscode-parallax-bg{background-size:cover!important;background-position:center center!important;top:0!important;height:100%!important}#dresscode .dresscode-tip{font-size:1rem;line-height:1.9}#dresscode .section-title{font-size:.75rem;letter-spacing:.32em}#travel .section-eyebrow{font-size:.58rem;letter-spacing:.18em;white-space:nowrap}.rsvp-card-sub{font-size:clamp(0.65rem,2.8vw,1.25rem);white-space:nowrap}
 #timeline{padding:6rem 1rem}
 .travel-card{padding:2.2rem 1.6rem 1.8rem;gap:1.4rem;flex-direction:column}.tc-icon{width:48px;height:48px}.tc-title{font-size:1.5rem}.travel-card::before,.travel-card::after,.tc-corner-tr,.tc-corner-bl{width:34px;height:34px;background-size:34px 34px}
 #rsvp{padding:7rem 1rem}.rsvp-card{padding:2.2rem 1.6rem}.rsvp-card-title{font-size:clamp(2.2rem,8vw,3.5rem)}.rsvp-form{gap:2rem 0}
@@ -263,8 +264,8 @@ footer{padding:2.4rem 1rem}.footer-names{font-size:2rem}
 .travel-card{padding:1.8rem 1.2rem 1.5rem;gap:1rem}.tc-icon{width:40px;height:40px}.tc-title{font-size:1.3rem}.tc-text{font-size:1.05rem}
 .rsvp-card{padding:1.8rem 1.1rem}
 .footer-names{font-size:1.7rem}
-#dresscode .section-title{font-size:.72rem;letter-spacing:.38em}
-#travel .section-eyebrow{font-size:.62rem;letter-spacing:.28em}
+#dresscode .section-title{font-size:.58rem;letter-spacing:.12em;white-space:nowrap}
+#travel .section-eyebrow{font-size:.52rem;letter-spacing:.16em;white-space:nowrap}
 }
 
 *{-webkit-tap-highlight-color:transparent}
