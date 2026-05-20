@@ -172,7 +172,7 @@ nav.scrolled{background:rgba(18,10,3,.88);-webkit-backdrop-filter:blur(14px);bac
 /* ═══ RSVP — Dark elegant ═══ */
 #rsvp{padding:10rem 2rem;background-color:var(--brown-deep);background-image:url('/rsvp_bg.jpeg');background-size:150%;background-position:center 40%;text-align:center;position:relative;overflow:hidden}#rsvp::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(to bottom,rgba(10,5,2,0.82) 0%,rgba(14,7,3,0.62) 40%,rgba(14,7,3,0.65) 70%,rgba(10,5,2,0.80) 100%)}.rsvp-card{position:relative;z-index:2}
 .rsvp-card{max-width:780px;margin:0 auto;background:rgba(18,8,3,.88);border:1px solid rgba(201,168,76,.3);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);color:var(--cream);padding:4rem 3.5rem;box-shadow:0 12px 50px rgba(0,0,0,.4);position:relative}
-.rsvp-card-title{font-family:var(--display);font-size:clamp(3rem,7vw,5rem);color:var(--cream);letter-spacing:.1em;margin-bottom:.5rem;position:relative;z-index:1}
+.rsvp-card-title{font-family:var(--sans);font-weight:300;font-size:clamp(2rem,5vw,3.2rem);color:var(--cream);letter-spacing:.25em;text-transform:uppercase;margin-bottom:.5rem;position:relative;z-index:1}
 .rsvp-card-sub{font-family:var(--sans);font-size:1.25rem;color:var(--cream-muted);margin-bottom:3rem;position:relative;z-index:1;font-weight:300}
 .rsvp-form{display:grid;grid-template-columns:1fr 1.6fr;gap:3rem 4rem;text-align:left;position:relative;z-index:1}
 .rsvp-col-label{font-family:var(--sans);font-size:.7rem;letter-spacing:.3em;color:var(--gold);text-transform:uppercase;font-weight:300;margin-bottom:2rem}
@@ -205,7 +205,7 @@ nav.scrolled{background:rgba(18,10,3,.88);-webkit-backdrop-filter:blur(14px);bac
 .registry-bg{position:absolute;inset:0;background:linear-gradient(135deg,#8B6040,#A07050 40%,#7A5030 80%,#6B4525);z-index:0}
 .registry-bg::before{content:'';position:absolute;inset:0;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><filter id='w'><feTurbulence type='turbulence' baseFrequency='0.015' numOctaves='4' seed='3'/><feColorMatrix values='0 0 0 0 0.4  0 0 0 0 0.25  0 0 0 0 0.1  0 0 0 0.35 0'/></filter><rect width='400' height='400' filter='url(%23w)'/></svg>");opacity:.7;mix-blend-mode:soft-light}
 .registry-inner{position:relative;z-index:1;max-width:900px;margin:0 auto}
-.registry-title{font-family:var(--display);font-size:clamp(3rem,8vw,5.5rem);color:var(--cream);letter-spacing:.15em;margin-bottom:1rem}
+.registry-title{font-family:var(--sans);font-weight:300;font-size:clamp(2rem,5vw,3.2rem);color:var(--cream);letter-spacing:.25em;text-transform:uppercase;margin-bottom:1rem}
 .registry-sub{font-family:var(--sans);font-size:.88rem;color:var(--cream);opacity:.85;line-height:1.9;margin-bottom:4rem;font-weight:300}
 .registry-cols{display:grid;grid-template-columns:1fr 1px 1fr;gap:3rem;text-align:left}
 .registry-divider{background:rgba(242,232,213,.3)}
@@ -250,17 +250,21 @@ footer{padding:3rem 1.5rem}.footer-names{font-size:2.6rem}
 @media(max-width:600px){
 .hero-names-img{max-width:min(500px,92vw)}
 #hero{padding:0 1rem}
-#countdown{padding:4rem 1rem}.cd-unit{padding:0 .5rem;width:auto;flex:1;flex-shrink:1}.cd-num{font-size:clamp(2.8rem,10vw,5rem)}.cd-sep{font-size:1.6rem;padding-bottom:.5rem}.cd-lbl{font-size:.52rem;letter-spacing:.25em}
+#countdown{padding:4rem 1rem}.cd-unit{padding:0 .5rem;width:auto;flex:1;flex-shrink:1}.cd-num{font-size:clamp(1rem,10vw,5rem)}.cd-sep{font-size:1.6rem;padding-bottom:.5rem}.cd-lbl{font-size:.52rem;letter-spacing:.25em}
 #dresscode{padding:5rem 1rem}.dresscode-parallax-bg{background-size:cover!important;background-position:center center!important;top:0!important;height:100%!important}#dresscode .dresscode-tip{font-size:1rem;line-height:1.9}#dresscode .section-title{font-size:.75rem;letter-spacing:.32em}#travel .section-eyebrow{font-size:.58rem;letter-spacing:.18em;white-space:nowrap}.rsvp-card-sub{font-size:clamp(0.65rem,2.8vw,1.25rem);white-space:nowrap}
 #timeline{padding:6rem 1rem}
 .travel-card{padding:2.2rem 1.6rem 1.8rem;gap:1.4rem;flex-direction:column}.tc-icon{width:48px;height:48px}.tc-title{font-size:1.5rem}.travel-card::before,.travel-card::after,.tc-corner-tr,.tc-corner-bl{width:34px;height:34px;background-size:34px 34px}
 #rsvp{padding:7rem 1rem}.rsvp-card{padding:2.2rem 1.6rem}.rsvp-card-title{font-size:clamp(2.2rem,8vw,3.5rem)}.rsvp-form{gap:2rem 0}
 footer{padding:2.4rem 1rem}.footer-names{font-size:2rem}
-.tl-event{font-size:clamp(1.6rem,6vw,2.2rem)}.tl-time{font-size:1.1rem;letter-spacing:.15em}.tl-desc{font-size:1rem;line-height:1.75}#countdown .section-eyebrow{font-size:.82rem;letter-spacing:.22em}#timeline .section-eyebrow{font-size:.78rem;letter-spacing:.18em}.hero-eyebrow{letter-spacing:.12em}#travel{-webkit-backdrop-filter:none;backdrop-filter:none}.travel-card{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(14,7,2,.92)}
+.tl-event{font-size:clamp(1.6rem,6vw,2.2rem)}.tl-time{font-size:1.1rem;letter-spacing:.15em}.tl-desc{font-size:1rem;line-height:1.75}#countdown .section-eyebrow{font-size:.82rem;letter-spacing:.22em}#timeline .section-eyebrow{font-size:.78rem;letter-spacing:.18em}.hero-eyebrow{letter-spacing:.12em}.hero-date{font-size:clamp(.9rem,4.5vw,2rem);letter-spacing:.25em;white-space:nowrap}#travel{-webkit-backdrop-filter:none;backdrop-filter:none}.travel-card{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(14,7,2,.92)}
+}
+@media(max-width:360px){
+#countdown{padding:3rem .25rem}.cd-unit{padding:0 .15rem}.cd-num{font-size:9vw}.cd-sep{font-size:.95rem}.cd-lbl{font-size:.42rem;letter-spacing:.18em}
+.hero-date{font-size:5vw;letter-spacing:.14em}
 }
 @media(max-width:400px){
 .hero-names-img{max-width:96vw}
-#countdown{padding:3rem .75rem}.cd-unit{padding:0 .6rem}.cd-grid{gap:.2rem 0}
+#countdown{padding:3rem .5rem}.cd-unit{padding:0 .3rem}.cd-sep{font-size:1.2rem}.cd-grid{gap:.2rem 0}.hero-date{letter-spacing:.18em}
 .travel-card{padding:1.8rem 1.2rem 1.5rem;gap:1rem}.tc-icon{width:40px;height:40px}.tc-title{font-size:1.3rem}.tc-text{font-size:1.05rem}
 .rsvp-card{padding:1.8rem 1.1rem}
 .footer-names{font-size:1.7rem}
