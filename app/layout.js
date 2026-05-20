@@ -20,10 +20,27 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
+        {/* Preconnect to Google Fonts domains to eliminate extra round-trips */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* Load fonts non-render-blocking: preload → onload swap trick */}
+        <link
+          rel="preload"
+          as="style"
+          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Italiana&family=Outfit:wght@200;300;400&family=Dancing+Script:wght@400;700&family=Cinzel:wght@300;400&family=Quicksand:wght@300;400;500&display=swap"
+        />
         <link
           href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Italiana&family=Outfit:wght@200;300;400&family=Dancing+Script:wght@400;700&family=Cinzel:wght@300;400&family=Quicksand:wght@300;400;500&display=swap"
           rel="stylesheet"
+          media="print"
+          onLoad="this.media='all'"
         />
+        <noscript>
+          <link
+            href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Italiana&family=Outfit:wght@200;300;400&family=Dancing+Script:wght@400;700&family=Cinzel:wght@300;400&family=Quicksand:wght@300;400;500&display=swap"
+            rel="stylesheet"
+          />
+        </noscript>
         {/* Hardcoded OG tags — ensures WhatsApp/bots see them without JS */}
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://wedding-website-silk-nine.vercel.app/" />

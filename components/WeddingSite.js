@@ -155,45 +155,62 @@ export default function WeddingSite() {
     let _rawTP = 0, _smoothTP = 0, _travelLerping = false;
 
     function onScroll() {
+      // ── Batch ALL layout reads first (prevents forced reflow) ────────────────
       const y = window.scrollY;
-      const maxH = document.body.scrollHeight - window.innerHeight;
-      prog.style.width = (y / maxH * 100) + '%';
-      var _sbuf = window.innerHeight * 0.18;
-      siteBg.style.transform = 'translateY(' + Math.max(-_sbuf, Math.min(_sbuf, y * 0.3)) + 'px)';
-      var _practicalEl = document.getElementById('practical');
-      var _winH = window.innerHeight;
-      var _pTop = _practicalEl ? _practicalEl.getBoundingClientRect().top : _winH;
-      siteBg.style.opacity = Math.max(0, Math.min(1, _pTop / _winH));
-      // RSVP section bg parallax via background-position
-      var rsvpEl = document.getElementById('rsvp');
-      if (rsvpEl) {
-        var rsvpRect = rsvpEl.getBoundingClientRect();
-        var rsvpRatio = 1 - (rsvpRect.top + rsvpRect.height / 2) / window.innerHeight;
-        var rsvpPos = 40 + rsvpRatio * 18;
-        rsvpEl.style.backgroundPosition = 'center ' + Math.max(20, Math.min(60, rsvpPos)) + '%';
-      }
       const vw = window.innerWidth;
       const vh = window.innerHeight;
+      const maxH = document.body.scrollHeight - vh;
+
+      const _practicalEl = document.getElementById('practical');
+      const _pTop = _practicalEl ? _practicalEl.getBoundingClientRect().top : vh;
+
+      const rsvpEl = document.getElementById('rsvp');
+      const rsvpRect = rsvpEl ? rsvpEl.getBoundingClientRect() : null;
+
+      let practRect = null, practOffH = 0, trackWidth = 0, globalStart = 0, globalEnd = 0;
+      if (practicalSection && colonnade && vw > 900) {
+        practRect = practicalSection.getBoundingClientRect();
+        practOffH = practicalSection.offsetHeight;
+        trackWidth = colonnade.scrollWidth;
+        const cdEl = document.getElementById('countdown');
+        globalStart = cdEl ? cdEl.offsetTop : practicalSection.offsetTop;
+        globalEnd = practicalSection.offsetTop + practOffH - vh;
+      }
+
+      // Read arch rects only when practical section is pinned (avoids unnecessary layout reads)
+      const archRects = (practRect && practRect.top <= 0 && practRect.bottom >= vh)
+        ? Array.from(arches).map(a => a.getBoundingClientRect())
+        : [];
+
+      let earlyStart = 0, travelEnd = 0;
+      if (travelSection && vw > 900) {
+        const tlEl = document.getElementById('dresscode');
+        earlyStart = tlEl ? tlEl.offsetTop : travelSection.offsetTop;
+        travelEnd = travelSection.offsetTop + travelSection.offsetHeight - vh;
+      }
+
+      // ── Now do all writes ────────────────────────────────────────────────────
+      prog.style.width = (y / maxH * 100) + '%';
+      const _sbuf = vh * 0.18;
+      siteBg.style.transform = 'translateY(' + Math.max(-_sbuf, Math.min(_sbuf, y * 0.3)) + 'px)';
+      siteBg.style.opacity = Math.max(0, Math.min(1, _pTop / vh));
+
+      if (rsvpEl && rsvpRect) {
+        const rsvpRatio = 1 - (rsvpRect.top + rsvpRect.height / 2) / vh;
+        const rsvpPos = 40 + rsvpRatio * 18;
+        rsvpEl.style.backgroundPosition = 'center ' + Math.max(20, Math.min(60, rsvpPos)) + '%';
+      }
 
       // ═══ HORIZONTAL SCROLL — Worth the Drive ═══
-      if (practicalSection && colonnade && vw > 900) {
-        const rect = practicalSection.getBoundingClientRect();
-        const scrolled = -rect.top;
-        const maxScroll = practicalSection.offsetHeight - vh;
-        let progress = Math.max(0, Math.min(1, scrolled / maxScroll));
-        const trackWidth = colonnade.scrollWidth;
+      if (practicalSection && colonnade && vw > 900 && practRect) {
         const travel = trackWidth - vw;
-        // Progress anchored to countdown section — starts accumulating from "until we say I do"
-        const cdEl = document.getElementById('countdown');
-        const globalStart = cdEl ? cdEl.offsetTop : practicalSection.offsetTop;
-        const globalEnd = practicalSection.offsetTop + practicalSection.offsetHeight - vh;
-        const lockedProgress = Math.max(0, Math.min(1, (window.scrollY - globalStart) / (globalEnd - globalStart)));
+        const lockedProgress = Math.max(0, Math.min(1, (y - globalStart) / Math.max(1, globalEnd - globalStart)));
 
-        if (rect.top <= 0 && rect.bottom >= vh) {
+        if (practRect.top <= 0 && practRect.bottom >= vh) {
           // Pinned — drive horizontal colonnade
           colonnade.style.transform = 'translateX(' + (-lockedProgress * travel) + 'px)';
           practicalProgress.style.width = (lockedProgress * 100) + '%';
-        } else if (rect.top > 0) {
+        } else if (practRect.top > 0) {
           // Not yet pinned — pre-position colonnade silently so there is no jump when it pins
           colonnade.style.transform = 'translateX(' + (-lockedProgress * travel) + 'px)';
           practicalProgress.style.width = '0%';
@@ -201,29 +218,25 @@ export default function WeddingSite() {
           colonnade.style.transform = 'translateX(' + (-travel) + 'px)';
           practicalProgress.style.width = '100%';
         }
-        // Arch scale: always runs so cards are never in an un-transformed state (prevents snap glitch)
-        arches.forEach(arch => {
-          const ar = arch.getBoundingClientRect();
+        // Arch scale: uses pre-read rects — no layout read inside the loop
+        arches.forEach((arch, idx) => {
+          const ar = archRects[idx] || arch.getBoundingClientRect();
           const ac = ar.left + ar.width / 2;
           const xRatio = ac / vw; // 0=left edge, 1=right edge
           let scale, opacity;
-          // Cards only start growing once within 28% of viewport of center,
-          // then ease in quickly so they're full-size right at center.
-          const GROW_START = 0.92; // xRatio threshold where scaling begins
+          const GROW_START = 0.92;
           if (xRatio <= 0.5) {
             scale = 1.0; opacity = 1;
           } else if (xRatio <= GROW_START) {
-            const d = (xRatio - 0.5) / (GROW_START - 0.5); // 0→1 as card approaches threshold
-            const eased = d * d * d;                         // cubic — slow start, fast finish
+            const d = (xRatio - 0.5) / (GROW_START - 0.5);
+            const eased = d * d * d;
             scale = 1.0 - eased * 0.72;
             opacity = 1 - eased * 0.65;
           } else {
-            // Beyond threshold — card is tiny/invisible, waiting its turn
             scale = 0.28; opacity = 0.08;
           }
           arch.style.transform = 'scale(' + scale + ')';
           arch.style.opacity = Math.max(0.15, opacity);
-          // Title + text reveal: fade in as card approaches center from the right
           const TEXT_FADE_START = 0.78;
           let textOpacity;
           if (xRatio <= 0.5) {
@@ -242,11 +255,7 @@ export default function WeddingSite() {
 
       // ═══ SPLIT-LANE — Travel section ═══
       if (travelSection && vw > 900) {
-        // Progress anchored to dress code section top
-        const tlEl = document.getElementById('dresscode');
-        const earlyStart = tlEl ? tlEl.offsetTop : travelSection.offsetTop;
-        const travelEnd = travelSection.offsetTop + travelSection.offsetHeight - vh;
-        _rawTP = Math.max(0, Math.min(1, (window.scrollY - earlyStart) / Math.max(1, travelEnd - earlyStart)));
+        _rawTP = Math.max(0, Math.min(1, (y - earlyStart) / Math.max(1, travelEnd - earlyStart)));
         travelProgress.style.width = (_rawTP * 100) + '%';
         if (!_travelLerping) { _travelLerping = true; _lerpTravel(); }
       }
@@ -258,8 +267,11 @@ export default function WeddingSite() {
       const n = travelCards.length;           // 4 cards
       const win = 1 / n;                        // each card owns 1/4 of scroll range
 
+      // Batch all offsetWidth reads BEFORE any writes to avoid forced reflow
+      const cardWidths = Array.from(travelCards).map(card => card.offsetWidth || 560);
+
       travelCards.forEach((card, i) => {
-        const cardW = card.offsetWidth || 560;
+        const cardW = cardWidths[i];
         const centerX = -cardW / 2;             // left:50% + translateX(-cardW/2) = centered
         const fromLeft = (i % 2 === 0);           // even cards enter from left, odd from right
         const offX = fromLeft ? centerX - vw * 0.6 : centerX + vw * 0.6; // off-screen start
@@ -577,7 +589,7 @@ export default function WeddingSite() {
       <div id="site-bg"></div><div id="venue-bg"></div><div id="site-overlay"></div><div id="progress"></div>
 
       <nav id="nav">
-        <a href="#hero" className="nav-logo"><img src="/favicon.svg" alt="A · L" className="nav-logo-img" /></a>
+        <a href="#hero" className="nav-logo"><img src="/favicon.svg" alt="A · L" className="nav-logo-img" fetchpriority="high" /></a>
         <ul className="nav-links"><li><a href="#countdown">Countdown</a></li><li><a href="#practical">Venue</a></li><li><a href="#timeline">Event Details</a></li><li><a href="#travel">Getting Around</a></li><li><a href="#rsvp">R.S.V.P.</a></li>{showRegistry && <li><a href="#registry">Wishes</a></li>}</ul>
         <button className="nav-burger" id="navBurger" aria-label="Open menu">
           <span></span><span></span><span></span>
