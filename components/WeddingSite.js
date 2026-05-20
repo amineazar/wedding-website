@@ -6,6 +6,9 @@ export default function WeddingSite() {
 
   useEffect(() => {
     if (window.location.pathname === '/rsvp') setShowRegistry(false);
+    // Disable browser scroll restoration so refresh always returns to the top
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    window.scrollTo(0, 0);
   }, []);
 
   useEffect(() => {
@@ -184,8 +187,9 @@ export default function WeddingSite() {
 
       let earlyStart = 0, travelEnd = 0;
       if (travelSection && vw > 900) {
-        const tlEl = document.getElementById('dresscode');
-        earlyStart = tlEl ? tlEl.offsetTop : travelSection.offsetTop;
+        // Start 60% of viewport before the section sticks: the card enters the
+        // viewport mid-animation and is fully centred by the time the pin locks.
+        earlyStart = travelSection.offsetTop - vh * 0.60;
         travelEnd = travelSection.offsetTop + travelSection.offsetHeight - vh;
       }
 
@@ -257,7 +261,12 @@ export default function WeddingSite() {
       if (travelSection && vw > 900) {
         _rawTP = Math.max(0, Math.min(1, (y - earlyStart) / Math.max(1, travelEnd - earlyStart)));
         travelProgress.style.width = (_rawTP * 100) + '%';
-        if (!_travelLerping) { _travelLerping = true; _lerpTravel(); }
+        if (!_travelLerping) {
+          // Snap on first entry so there's no frozen peek frame before the lerp catches up
+          _smoothTP = _rawTP;
+          _travelLerping = true;
+          _lerpTravel();
+        }
       }
     }
 
@@ -279,14 +288,10 @@ export default function WeddingSite() {
 
         const rawP = (totalProgress - i * win) / win; // 0→1 within this card's window
 
-        // ── before this card's turn ──────────────────────────────────────────────
+        // ── before this card's turn — faint ghost hint off-screen ──────────────
         if (rawP <= 0) {
-          // First card: already partially visible as the section enters view
-          const peekOpacity = (i === 0) ? 0.28 : 0;
-          const peekScale   = (i === 0) ? 0.65 : 0.45;
-          const peekTx      = (i === 0) ? offX * 0.5 : offX;
-          card.style.transform = 'translateY(-50%) translateX(' + peekTx + 'px) scale(' + peekScale + ')';
-          card.style.opacity = String(peekOpacity);
+          card.style.transform = 'translateY(-50%) translateX(' + offX + 'px) scale(0.45)';
+          card.style.opacity = i === 0 ? '0.10' : '0'; // card 0: subtle hint visible as section enters
           card.style.zIndex = 10 + i;
           card.classList.remove('active');
           return;
@@ -309,18 +314,17 @@ export default function WeddingSite() {
         }
 
         // ── three phases within this card's window ───────────────────────────────
-        const ENTRY = 0.50;  // 0→0.50  slide in from side
-        const HOLD = 0.72;   // 0.50→0.72  fully visible hold
-                              // 0.72→1.0  fade out (last card skips)
+        const ENTRY = 0.45;  // 0→0.45  slide in from side
+        const HOLD = 0.90;   // 0.45→0.90  fully visible hold (longer reading time)
+                              // 0.90→1.0  fade out (last card skips)
 
         let tx, scale, opacity;
 
         if (rawP <= ENTRY) {
-          const t = rawP / ENTRY;
-          const e = 1 - Math.pow(1 - t, 3);       // cubic ease-out
-          tx = offX + (centerX - offX) * e;
-          scale = 0.45 + e * 0.55;
-          opacity = t * t * (3 - 2 * t);             // smoothstep
+          const t = rawP / ENTRY;                    // 0→1 over entry phase
+          tx = offX + (centerX - offX) * t;          // linear position — uniform slide, no "jumped to center"
+          scale = 0.45 + t * 0.55;
+          opacity = t * t * (3 - 2 * t);             // smoothstep fade-in
         } else if (rawP <= HOLD) {
           tx = centerX;
           scale = 1;
@@ -358,10 +362,10 @@ export default function WeddingSite() {
     function recalcTravelHeight() {
       if (!travelSection || window.innerWidth <= 900) return;
       const vh = window.innerHeight;
-      const tlEl = document.getElementById('dresscode');
-      const earlyStart = tlEl ? tlEl.offsetTop : travelSection.offsetTop;
-      // Section ends 0.35 screens after animation completes — keep just enough height
-      const H = earlyStart - travelSection.offsetTop + vh * 4.0;
+      // earlyStart = travel.offsetTop - 0.60*vh
+      // effective denominator = H - 0.40*vh; target denominator = 4.20*vh (extra hold time)
+      // → H = 4.20*vh + 0.40*vh = 4.60*vh
+      const H = vh * 4.60;
       travelSection.style.height = Math.max(H, 2.5 * vh) + 'px';
     }
     recalcTravelHeight();
@@ -609,7 +613,7 @@ export default function WeddingSite() {
       <section id="hero">
         <div className="hero-content">
           <p className="hero-eyebrow">You are warmly invited to celebrate</p>
-          <img src="/hero-title.png" className="hero-names-img" alt="Amine &amp; Lamya" />
+          <img src="/hero-title-white.png" className="hero-names-img" alt="Amine &amp; Lamya" />
           <div className="hero-rule"></div>
           <p className="hero-date">20 &middot; 06 &middot; 2026</p>
           <p className="hero-location">Skylodge<br />Feytroun, Lebanon</p>
@@ -787,7 +791,7 @@ export default function WeddingSite() {
         </div>
       </section>}
 
-      <footer><img src="/hero-title.png" className="footer-names-img footer-title-img" alt="Amine &amp; Lamya" /><p className="footer-date">20 &middot; 06 &middot; 2026 &nbsp;&middot;&nbsp; Skylodge, Feytroun, Lebanon</p></footer>
+      <footer><img src="/hero-title-white.png" className="footer-names-img footer-title-img" alt="Amine &amp; Lamya" /><p className="footer-date">20 &middot; 06 &middot; 2026 &nbsp;&middot;&nbsp; Skylodge, Feytroun, Lebanon</p></footer>
     </>
   );
 }
