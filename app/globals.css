@@ -71,7 +71,7 @@ nav.scrolled{background:rgba(18,10,3,.88);-webkit-backdrop-filter:blur(14px);bac
 #countdown .section-eyebrow{font-size:1.25rem;letter-spacing:.38em}
 .cd-grid{display:flex;justify-content:center;align-items:center;flex-wrap:wrap}
 .cd-unit{text-align:center;padding:0 2.5rem;width:11rem;flex-shrink:0}
-.cd-num{font-family:'Cinzel',var(--serif);font-weight:300;font-style:normal;font-size:clamp(2.8rem,5.5vw,4.6rem);color:var(--gold-light);line-height:1;letter-spacing:.08em;display:block;width:100%;text-align:center;font-variant-numeric:tabular-nums;font-feature-settings:'tnum'}
+.cd-num{font-family:'Cormorant Garamond',var(--serif);font-weight:300;font-style:normal;font-size:clamp(2.8rem,5.5vw,4.6rem);color:var(--gold-light);line-height:1;letter-spacing:.12em;display:block;width:100%;text-align:center;font-variant-numeric:tabular-nums;font-feature-settings:'tnum'}
 .cd-lbl{font-family:var(--sans);font-size:.82rem;letter-spacing:.35em;color:var(--cream-muted);text-transform:uppercase;font-weight:300;margin-top:.5rem;display:block}
 .cd-sep{font-family:var(--serif);font-size:3rem;color:var(--gold);opacity:.25;padding-bottom:1.2rem;align-self:center}
 
