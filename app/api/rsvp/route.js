@@ -1,4 +1,4 @@
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbx352vry22op57Z-q4u89ZDqjRCN83A9LwhVnsbDwV9YdhoYdpCJX7gxW4Ui3Cc4iLc_A/exec';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzZhvIYFFdLhgwhAjlUIjLkJlk4t5GJrro9CYoIU43afvlr6Fhdt3k0Zijh9KfJ44F9/exec';
 
 export async function POST(request) {
   try {
