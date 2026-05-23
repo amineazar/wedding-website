@@ -493,14 +493,16 @@ export default function WeddingSite() {
         guestCount = 0;
       }
 
-      // If already submitted and user switches to decline, re-enable submit to allow update
-      if (hasSubmitted && rsvpSubmitBtn) {
+      // Re-enable submit whenever declining is selected (button state survives re-renders via dataset)
+      const submitBtn = document.getElementById('rsvpSubmitBtn');
+      if (submitBtn) {
+        const wasSubmitted = submitBtn.dataset.submitted === 'true';
         if (declining) {
-          rsvpSubmitBtn.disabled = false;
-          rsvpSubmitBtn.textContent = 'Update RSVP';
-        } else {
-          rsvpSubmitBtn.disabled = true;
-          rsvpSubmitBtn.textContent = 'Sent ✓';
+          submitBtn.disabled = false;
+          submitBtn.textContent = wasSubmitted ? 'Update RSVP' : 'Send RSVP';
+        } else if (wasSubmitted) {
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Sent ✓';
         }
       }
     }
@@ -551,6 +553,7 @@ export default function WeddingSite() {
         const guestNames = Array.from(guestList.querySelectorAll('.rsvp-guest-item input')).map(i => i.value.trim()).filter(Boolean).join(', ');
 
         if (!name) { showStatus('Please enter your name.', '#E8766A'); return; }
+        if (!phone) { showStatus('Please enter your phone number.', '#E8766A'); return; }
         if (!attending) { showStatus('Please select if you will attend.', '#E8766A'); return; }
 
         const data = { name, email, phone, attending, guests: guestNames, message: msg, timestamp: new Date().toISOString() };
@@ -563,7 +566,8 @@ export default function WeddingSite() {
           const res = await fetch('/api/rsvp', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
           if (!res.ok) throw new Error('Server error');
           hasSubmitted = true;
-          const msg = attending === 'No' && hasSubmitted
+          rsvpSubmitBtn.dataset.submitted = 'true';
+          const msg = attending === 'No'
             ? 'Your response has been updated.'
             : 'Thank you! Your RSVP has been received.';
           showStatus(msg, 'var(--gold)');
@@ -744,7 +748,7 @@ export default function WeddingSite() {
               <p className="rsvp-col-label">Your Details</p>
               <input className="rsvp-input" type="text" placeholder="Full Name" id="rsvpName" />
               <input className="rsvp-input" type="email" placeholder="Email Address" id="rsvpEmail" />
-              <input className="rsvp-input" type="tel" placeholder="Phone Number" id="rsvpPhone" />
+              <input className="rsvp-input" type="tel" placeholder="Phone Number *" id="rsvpPhone" />
             </div>
             <div className="rsvp-row-full"><input className="rsvp-input" type="text" placeholder="Message (Optional)" id="rsvpMsg" /></div>
             <div className="rsvp-row-full rsvp-guest-section">

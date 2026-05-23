@@ -1,17 +1,22 @@
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzZhvIYFFdLhgwhAjlUIjLkJlk4t5GJrro9CYoIU43afvlr6Fhdt3k0Zijh9KfJ44F9/exec';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbx352vry22op57Z-q4u89ZDqjRCN83A9LwhVnsbDwV9YdhoYdpCJX7gxW4Ui3Cc4iLc_A/exec';
 
 export async function POST(request) {
   try {
     const data = await request.json();
 
     // Google Apps Script reads form fields via e.parameter — requires URL-encoded body.
+    // When email is absent the GAS falls back to phone-number lookup, so no
+    // special flag is needed here — the proxy just forwards as-is.
     // Sending application/x-www-form-urlencoded so e.parameter.name, e.parameter.email, etc. are populated.
     const params = new URLSearchParams(data);
     const response = await fetch(SHEET_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: params.toString(),
+      redirect: 'follow',
     });
+    const gasText = await response.text();
+    console.log('GAS response:', response.status, gasText);
 
     return new Response(JSON.stringify({ ok: true }), {
       status: 200,
